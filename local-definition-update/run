@@ -4,7 +4,7 @@ set -e
 
 cd "$(dirname "$0")"
 
-docker build -t timgroup/clamav .
+docker build --network host -t timgroup/clamav .
 
 workdir=$(mktemp -d)
 trap 'rm -rf "$workdir"' EXIT
