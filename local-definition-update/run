@@ -1,0 +1,16 @@
+#!/bin/sh
+
+set -e
+
+cd "$(dirname "$0")"
+
+docker build -t timgroup/clamav .
+
+workdir=$(mktemp -d)
+trap 'rm -rf "$workdir"' EXIT
+
+docker run -v "$workdir":/mnt/clamav -it timgroup/clamav sh -c 'work=$(mktemp -d) && chown clamav:clamav $work && freshclam --config-file=/etc/local-freshclam.conf --datadir=$work && cp -v $work/*.cvd /mnt/clamav'
+
+ls -lF "$workdir"
+
+rsync -tv "$workdir"/*.cvd .
