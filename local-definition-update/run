@@ -9,7 +9,7 @@ docker build --network host -t timgroup/clamav .
 workdir=$(mktemp -d)
 trap 'rm -rf "$workdir"' EXIT
 
-docker run -v "$workdir":/mnt/clamav -it timgroup/clamav sh -c 'work=$(mktemp -d) && chown clamav:clamav $work && freshclam --config-file=/etc/local-freshclam.conf --datadir=$work && cp -v $work/*.cvd /mnt/clamav'
+docker run -v "$workdir":/mnt/clamav timgroup/clamav sh -c 'work=$(mktemp -d) && chown clamav:clamav $work && freshclam --config-file=/etc/local-freshclam.conf --datadir=$work && cp -v $work/*.cvd /mnt/clamav'
 
 ls -lF "$workdir"
 
