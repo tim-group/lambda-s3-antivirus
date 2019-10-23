@@ -112,6 +112,8 @@ async function uploadAVDefinitions() {
  */
 function scanLocalFile(pathToFile) {
     try {
+        utils.generateSystemMessage(`Starting virus scan - running command: ${constants.PATH_TO_CLAMAV} -v -a --stdout -d /tmp/ '/tmp/download/${pathToFile}'`);
+
         let result = execSync(`${constants.PATH_TO_CLAMAV} -v -a --stdout -d /tmp/ '/tmp/download/${pathToFile}'`);
 
         utils.generateSystemMessage('SUCCESSFUL SCAN, FILE CLEAN');
