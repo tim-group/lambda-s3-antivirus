@@ -32,7 +32,7 @@ echo "-- Copying the executables and required libraries --"
 cp clamav/usr/bin/clamscan clamav/usr/bin/freshclam clamav/usr/lib64/* bin/.
 
 echo "-- Cleaning up ClamAV folder --"
-rm -rf clamav
+sudo rm -rf clamav
 
 cp -R ./s3-antivirus/* bin/.
 
@@ -43,4 +43,4 @@ popd
 cp bin/${LAMBDA_FILE} .
 
 echo "-- Cleaning up bin folder --"
-rm -rf bin
+sudo rm -rf bin
