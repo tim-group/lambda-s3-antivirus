@@ -32,6 +32,9 @@ const VIRUS_SCAN_STATUS_KEY = process.env.VIRUS_SCAN_STATUS_KEY || 'virusScanSta
 const VIRUS_SCAN_TIMESTAMP_KEY = process.env.VIRUS_SCAN_TIMESTAMP_KEY || 'virusScanTimestamp';
 const MAX_FILE_SIZE = process.env.MAX_FILE_SIZE || '314572800';
 
+// notification of attachment scans
+const SLACK_WEBHOOK_URL = process.env.SLACK_WEBHOOK_URL;
+
 // List of CLAMAV definition files. These are the compressed files.
 const CLAMAV_DEFINITIONS_FILES = ['main.cvd', 'daily.cvd', 'bytecode.cvd'];
 
@@ -50,5 +53,6 @@ module.exports = {
     STATUS_SKIPPED_FILE         : STATUS_SKIPPED_FILE,
     VIRUS_STATUS_STATUS_KEY: VIRUS_SCAN_STATUS_KEY,
     VIRUS_SCAN_TIMESTAMP_KEY: VIRUS_SCAN_TIMESTAMP_KEY,
-    MAX_FILE_SIZE               : MAX_FILE_SIZE
+    MAX_FILE_SIZE               : MAX_FILE_SIZE,
+    SLACK_WEBHOOK_URL : SLACK_WEBHOOK_URL
 };

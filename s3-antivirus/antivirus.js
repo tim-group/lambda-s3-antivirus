@@ -80,6 +80,10 @@ async function lambdaHandleEvent(event, context) {
         virusScanStatus = clamav.scanLocalFile(path.basename(s3ObjectKey));
     }
 
+    if (constants.SLACK_WEBHOOK_URL) {
+        await postToWebhook(constants.SLACK_WEBHOOK_URL, `Attachment s3://${s3ObjectBucket}/${s3ObjectKey} has been scanned: ${virusScanStatus}`);
+    }
+
     var taggingParams = {
         Bucket: s3ObjectBucket,
         Key: s3ObjectKey,
@@ -117,6 +121,43 @@ async function scanS3Object(s3ObjectKey, s3ObjectBucket){
     } finally {
         return virusScanStatus;
     }
+}
+
+function postToWebhook(webhookUrl, text) {
+    const url = new URL(webhookUrl);
+
+    return new Promise((resolve, reject) => {
+        const https = require("https");
+        const body = JSON.stringify({ text });
+        const options = {
+            hostname: url.hostname,
+            port: url.port,
+            path: url.pathname,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Content-Length": Buffer.byteLength(body)
+            }
+        };
+
+        const req = https.request(options, res => {
+            if (res.statusCode === 200) {
+                res.on('data', (d) => {
+                    resolve(d);
+                });
+            }
+            else {
+                reject(new Error(`${url}: status code was ${res.statusCode}`));
+            }
+        });
+
+        req.on('error', error => {
+            reject(error);
+        });
+
+        req.write(body);
+        req.end();
+    });
 }
 
 module.exports = {
