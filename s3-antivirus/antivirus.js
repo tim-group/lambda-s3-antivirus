@@ -9,6 +9,7 @@ const clamav = require('./clamav');
 const s3 = new AWS.S3();
 const utils = require('./utils');
 const constants = require('./constants');
+const { URL } = require("url"); // not necessary on Node >= 10
 
 /**
  * Retrieve the file size of S3 object without downloading.
