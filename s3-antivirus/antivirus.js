@@ -82,7 +82,16 @@ async function lambdaHandleEvent(event, context) {
     }
 
     if (constants.SLACK_WEBHOOK_URL) {
-        await postToWebhook(constants.SLACK_WEBHOOK_URL, `Attachment s3://${s3ObjectBucket}/${s3ObjectKey} has been scanned: ${virusScanStatus}`);
+        if (virusScanStatus !== "CLEAN") {
+            await postToWebhook(constants.SLACK_WEBHOOK_URL, `Attachment s3://${s3ObjectBucket}/${s3ObjectKey} has been scanned: ${virusScanStatus}`);
+            utils.generateSystemMessage(`Sent notification to Slack for ${virusScanStatus} file`);
+        }
+        else {
+            utils.generateSystemMessage(`Skipped notification to Slack for ${virusScanStatus} file`);
+        }
+    }
+    else {
+        utils.generateSystemMessage(`Skipped notifying Slack as webhook URL not configured`);
     }
 
     var taggingParams = {
