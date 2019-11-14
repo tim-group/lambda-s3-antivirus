@@ -13,8 +13,7 @@ docker start s3-antivirus-builder
 
 echo "-- Updating, downloading and unpacking clamAV and ClamAV update --"
 docker exec -it -w /home/docker s3-antivirus-builder yum install -y cpio yum-utils
-docker exec -it -w /home/docker s3-antivirus-builder yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-docker exec -it -w /home/docker s3-antivirus-builder yum-config-manager --enable epel
+docker exec -it -w /home/docker s3-antivirus-builder amazon-linux-extras install -y epel
 docker exec -it -w /home/docker s3-antivirus-builder yumdownloader -x \*i686 --archlist=x86_64 clamav clamav-lib clamav-update json-c pcre2
 docker exec -it -w /home/docker s3-antivirus-builder /bin/sh -c "echo 'folder content' && ls -la"
 docker exec -it -w /home/docker s3-antivirus-builder /bin/sh -c "rpm2cpio clamav-0*.rpm | cpio -idmv"
