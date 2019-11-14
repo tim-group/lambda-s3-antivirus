@@ -43,3 +43,18 @@ cp bin/${LAMBDA_FILE} .
 
 echo "-- Cleaning up bin folder --"
 sudo rm -rf bin
+
+echo "-- Verifying shared libraries --"
+mkdir -p clamav
+unzip -d clamav ${LAMBDA_FILE}
+
+docker create -i -t -v ${PWD}/clamav:/home/docker --name s3-antivirus-sanitycheck amazonlinux
+docker start s3-antivirus-sanitycheck
+
+docker exec -it -w /home/docker s3-antivirus-sanitycheck /bin/sh -c "LD_LIBRARY_PATH=. ldd ./clamscan ./freshclam"
+docker exec -it -w /home/docker s3-antivirus-sanitycheck /bin/sh -c "LD_LIBRARY_PATH=. ./clamscan --version"
+docker exec -it -w /home/docker s3-antivirus-sanitycheck /bin/sh -c "LD_LIBRARY_PATH=. ./freshclam --version"
+
+docker stop s3-antivirus-sanitycheck
+docker rm s3-antivirus-sanitycheck
+sudo rm -rf clamav
