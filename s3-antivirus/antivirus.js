@@ -67,11 +67,19 @@ async function lambdaHandleEvent(event, context) {
     let s3ObjectKey = utils.extractKeyFromS3Event(event);
     let s3ObjectBucket = utils.extractBucketFromS3Event(event);
 
-    let virusScanStatus;
-
     //You need to verify that you are not getting too large a file
     //currently lambdas max out at 500MB storage.
-    if(await isS3FileTooBig(s3ObjectKey, s3ObjectBucket)){
+    let fileTooBig;
+    try {
+	fileTooBig = await isS3FileTooBig(s3ObjectKey, s3ObjectBucket);
+    } catch (err) {
+	console.log(`Failed to even check size of incoming file s3://${s3ObjectBucket}/${s3ObjectKey}`, err);
+	return constants.STATUS_ERROR_PROCESSING_FILE;
+    }
+
+    let virusScanStatus;
+
+    if(fileTooBig){
         virusScanStatus = constants.STATUS_SKIPPED_FILE;
     }
     else{
