@@ -64,6 +64,16 @@ resource "aws_iam_role" "virus-scanner" {
   })
 }
 
+resource "aws_iam_role_policy_attachment" "virus-scanner-can-read-av-definitions" {
+  role = aws_iam_role.virus-scanner.name
+  policy_arn = "arn:aws:iam::662373364858:policy/ReadAVDefinitions"
+}
+
+resource "aws_iam_role_policy_attachment" "virus-scanner-can-access-attachment-buckets" {
+  role = aws_iam_role.virus-scanner.name
+  policy_arn = "arn:aws:iam::662373364858:policy/ReadAccessTotest+production-tim-idea-attachments"
+}
+
 resource "aws_s3_bucket_policy" "test-tim-idea-attachments" {
   bucket = "test-tim-idea-attachments"
 
@@ -103,8 +113,8 @@ resource "aws_lambda_function" "virus-scanner" {
   description = "Scan an S3 for viruses and update its tags to indicate the result"
   timeout = 180
   memory_size = 1024
-  s3_bucket = data.aws_s3_bucket_object.lambda-source.bucket
-  s3_key = data.aws_s3_bucket_object.lambda-source.key
+//  s3_bucket = data.aws_s3_bucket_object.lambda-source.bucket
+//  s3_key = data.aws_s3_bucket_object.lambda-source.key
 
   environment {
     variables = {
@@ -141,6 +151,11 @@ resource "aws_iam_role" "virus-definitions-update" {
       }
     ]
   })
+}
+
+resource "aws_iam_role_policy_attachment" "virus-definitions-update-can-write-av-definitions" {
+  role = aws_iam_role.virus-definitions-update.name
+  policy_arn = "arn:aws:iam::662373364858:policy/WriteAVDefinitions"
 }
 
 resource "aws_lambda_function" "virus-definitions-update" {
