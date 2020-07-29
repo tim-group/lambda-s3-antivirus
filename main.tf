@@ -83,7 +83,7 @@ resource "aws_s3_bucket_policy" "test-tim-idea-attachments" {
         }
         Effect = "Deny"
         Principal = "*"
-        Resource = "arn:aws:s3:::test-tim-idea-attachments/*"
+        Resource = "${aws_s3_bucket.test-tim-idea-attachments.arn}/*"
         Sid = "OY, CI, and Office Only"
       }
     ]
