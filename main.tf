@@ -95,7 +95,7 @@ resource "aws_lambda_function" "virus-scanner" {
     variables = {
       PATH_TO_AV_DEFINITIONS = "lambda/av-definitions"
       CLAMAV_BUCKET_NAME = data.aws_s3_bucket.shared-timgroup-bucket.bucket
-      SLACK_WEBHOOK_URL = "https://hooks.slack.com/services/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"
+      SLACK_WEBHOOK_URL = var.slack_webhook_url
     }
   }
 }
