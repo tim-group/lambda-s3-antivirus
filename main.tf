@@ -79,6 +79,15 @@ resource "aws_iam_role_policy_attachment" "virus-scanner-can-tag-attachments" {
   policy_arn = "arn:aws:iam::662373364858:policy/PutObjectTaggingAccessTotest+production-tim-idea-attachments"
 }
 
+data "aws_iam_policy" "virus-scanner-cloudwatch-logs" {
+  arn = "arn:aws:iam::662373364858:policy/service-role/AWSLambdaBasicExecutionRole-93717aa9-8772-43a1-ad52-b1241ac16c6d"
+}
+
+resource "aws_iam_role_policy_attachment" "virus-scanner-can-write-cloudwatch-logs" {
+  role = aws_iam_role.virus-scanner.name
+  policy_arn = data.aws_iam_policy.virus-scanner-cloudwatch-logs.arn
+}
+
 resource "aws_s3_bucket_policy" "test-tim-idea-attachments" {
   bucket = "test-tim-idea-attachments"
 
@@ -161,6 +170,15 @@ resource "aws_iam_role" "virus-definitions-update" {
 resource "aws_iam_role_policy_attachment" "virus-definitions-update-can-write-av-definitions" {
   role = aws_iam_role.virus-definitions-update.name
   policy_arn = "arn:aws:iam::662373364858:policy/WriteAVDefinitions"
+}
+
+data "aws_iam_policy" "virus-definitions-update-cloudwatch-logs" {
+  arn = "arn:aws:iam::662373364858:policy/service-role/AWSLambdaBasicExecutionRole-f7ee4824-a2f0-4c3a-8865-c99e94962e0e"
+}
+
+resource "aws_iam_role_policy_attachment" "virus-definitions-update-can-write-cloudwatch-logs" {
+  role = aws_iam_role.virus-definitions-update.name
+  policy_arn = data.aws_iam_policy.virus-definitions-update-cloudwatch-logs.arn
 }
 
 resource "aws_lambda_function" "virus-definitions-update" {
