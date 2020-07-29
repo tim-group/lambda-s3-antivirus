@@ -11,8 +11,6 @@ terraform {
   }
 }
 
-data "aws_canonical_user_id" "current" { }
-
 data "aws_s3_bucket" "shared-timgroup-bucket" {
   bucket = "timgroup"
 }
@@ -33,8 +31,8 @@ resource "aws_s3_bucket" "test-tim-idea-attachments" {
 
     expiration {
       days = 2
-
     }
+
     noncurrent_version_expiration {
       days = 2
     }
@@ -84,7 +82,9 @@ resource "aws_s3_bucket_policy" "test-tim-idea-attachments" {
               "31.221.7.162/32",
             ]
           }
-          StringNotEquals = { "aws:PrincipalARN" = aws_iam_role.virus-scanner.arn }
+          StringNotEquals = {
+            "aws:PrincipalARN" = aws_iam_role.virus-scanner.arn
+          }
         }
         Effect = "Deny"
         Principal = "*"
@@ -120,7 +120,8 @@ resource "aws_s3_bucket_notification" "test-tim-idea-attachments" {
 
   lambda_function {
     lambda_function_arn = aws_lambda_function.virus-scanner.arn
-    events = ["s3:ObjectCreated:*"]
+    events = [
+      "s3:ObjectCreated:*"]
   }
 }
 
