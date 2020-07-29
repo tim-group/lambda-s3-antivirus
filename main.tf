@@ -3,6 +3,14 @@ provider "aws" {
   version = "~> 2.70"
 }
 
+terraform {
+  backend "s3" {
+    bucket = "timgroup-terraform"
+    key = "state/lambda-s3-antivirus.tfstate"
+    region = "eu-west-2"
+  }
+}
+
 data "aws_canonical_user_id" "current" { }
 
 data "aws_s3_bucket" "shared-timgroup-bucket" {
