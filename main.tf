@@ -17,6 +17,11 @@ data "aws_s3_bucket" "shared-timgroup-bucket" {
   bucket = "timgroup"
 }
 
+data "aws_s3_bucket_object" "lambda-source" {
+  bucket = data.aws_s3_bucket.shared-timgroup-bucket.bucket
+  key = "lambda/executable.zip"
+}
+
 resource "aws_s3_bucket" "test-tim-idea-attachments" {
   bucket = "test-tim-idea-attachments"
   acl = "private"
@@ -98,6 +103,8 @@ resource "aws_lambda_function" "virus-scanner" {
   description = "Scan an S3 for viruses and update its tags to indicate the result"
   timeout = 180
   memory_size = 1024
+  s3_bucket = data.aws_s3_bucket_object.lambda-source.bucket
+  s3_key = data.aws_s3_bucket_object.lambda-source.key
 
   environment {
     variables = {
@@ -120,6 +127,7 @@ resource "aws_s3_bucket_notification" "test-tim-idea-attachments" {
 resource "aws_iam_role" "virus-definitions-update" {
   name = "virus-definitions-update"
   path = "/service-role/"
+
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -142,6 +150,8 @@ resource "aws_lambda_function" "virus-definitions-update" {
   description = "Download clamav anti-virus database and deposit it in S3 for scanner to use"
   timeout = 180
   memory_size = 1024
+  s3_bucket = data.aws_s3_bucket_object.lambda-source.bucket
+  s3_key = data.aws_s3_bucket_object.lambda-source.key
 
   environment {
     variables = {
@@ -176,4 +186,3 @@ output "virus-scanner" {
 output "virus-definitions-update" {
   value = aws_lambda_function.virus-definitions-update.arn
 }
-
