@@ -137,6 +137,13 @@ resource "aws_lambda_function" "virus-scanner" {
       SLACK_WEBHOOK_URL = var.slack_webhook_url
     }
   }
+
+  depends_on = [
+    aws_iam_role_policy_attachment.virus-scanner-can-write-cloudwatch-logs,
+    aws_iam_role_policy_attachment.virus-scanner-can-access-attachment-buckets,
+    aws_iam_role_policy_attachment.virus-scanner-can-read-av-definitions,
+    aws_iam_role_policy_attachment.virus-scanner-can-tag-attachments,
+  ]
 }
 
 resource "aws_s3_bucket_notification" "test-tim-idea-attachments" {
@@ -198,6 +205,11 @@ resource "aws_lambda_function" "virus-definitions-update" {
       CLAMAV_BUCKET_NAME = data.aws_s3_bucket.shared-timgroup-bucket.bucket
     }
   }
+
+  depends_on = [
+    aws_iam_role_policy_attachment.virus-definitions-update-can-write-cloudwatch-logs,
+    aws_iam_role_policy_attachment.virus-definitions-update-can-write-av-definitions,
+  ]
 }
 
 resource "aws_cloudwatch_event_rule" "av-definitions-update" {
