@@ -74,6 +74,11 @@ resource "aws_iam_role_policy_attachment" "virus-scanner-can-access-attachment-b
   policy_arn = "arn:aws:iam::662373364858:policy/ReadAccessTotest+production-tim-idea-attachments"
 }
 
+resource "aws_iam_role_policy_attachment" "virus-scanner-can-tag-attachments" {
+  role = aws_iam_role.virus-scanner.name
+  policy_arn = "arn:aws:iam::662373364858:policy/PutObjectTaggingAccessTotest+production-tim-idea-attachments"
+}
+
 resource "aws_s3_bucket_policy" "test-tim-idea-attachments" {
   bucket = "test-tim-idea-attachments"
 
