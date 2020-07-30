@@ -126,7 +126,7 @@ resource "aws_lambda_function" "virus-scanner" {
   handler = "antivirus.lambdaHandleEvent"
   description = "Scan an S3 for viruses and update its tags to indicate the result"
   timeout = 180
-  memory_size = 1024
+  memory_size = 1536
 //  s3_bucket = data.aws_s3_bucket_object.lambda-source.bucket
 //  s3_key = data.aws_s3_bucket_object.lambda-source.key
 
