@@ -1,10 +1,8 @@
-#!/usr/bin/env bash
+l#!/usr/bin/env bash
 set -e
 LAMBDA_FILE="lambda.zip"
 
 rm -f ${LAMBDA_FILE}
-
-mkdir -p clamav
 
 cleanup() {
     echo "-- Cleaning up --"
@@ -17,8 +15,9 @@ cleanup() {
 trap 'cleanup' EXIT
 
 echo "-- Downloading AmazonLinux container --"
+mkdir -p clamav
 docker pull amazonlinux
-docker create -i -t -v ${PWD}/clamav:/home/docker  --name s3-antivirus-builder amazonlinux
+docker create -it --network host -v ${PWD}/clamav:/home/docker  --name s3-antivirus-builder amazonlinux
 docker start s3-antivirus-builder
 
 echo "-- Updating, downloading and unpacking clamAV and ClamAV update --"
@@ -37,24 +36,20 @@ docker exec -w /home/docker s3-antivirus-builder /bin/sh -c "cp -v /lib64/libxml
 docker exec -w /home/docker s3-antivirus-builder /bin/sh -c "cp -v /lib64/libbz2.so* usr/lib64"
 docker exec -w /home/docker s3-antivirus-builder /bin/sh -c "cp -v /lib64/liblzma.so* usr/lib64"
 
-mkdir ./bin
-
 echo "-- Copying the executables and required libraries --"
+mkdir ./bin
 cp clamav/usr/bin/clamscan clamav/usr/bin/freshclam clamav/usr/lib64/* bin/.
-
 cp -R ./s3-antivirus/* bin/.
-
 pushd ./bin
 zip -r9 ${LAMBDA_FILE} *
 popd
-
 cp bin/${LAMBDA_FILE} .
 
 echo "-- Verifying shared libraries --"
 mkdir -p clamav_check
 unzip -d clamav_check ${LAMBDA_FILE}
 
-docker create -i -t -v ${PWD}/clamav_check:/home/docker --name s3-antivirus-sanitycheck amazonlinux
+docker create -it --network host -v ${PWD}/clamav_check:/home/docker --name s3-antivirus-sanitycheck amazonlinux
 docker start s3-antivirus-sanitycheck
 
 docker exec -w /home/docker s3-antivirus-sanitycheck /bin/sh -c "LD_LIBRARY_PATH=. ldd ./clamscan ./freshclam"
