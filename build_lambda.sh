@@ -10,7 +10,7 @@ cleanup() {
     docker rm s3-antivirus-builder || true
     docker stop s3-antivirus-sanitycheck || true
     docker rm s3-antivirus-sanitycheck || true
-    sudo rm -rf bin clamav clamav_check
+    rm -rf bin clamav clamav_check
 }
 trap 'cleanup' EXIT
 
@@ -35,6 +35,7 @@ docker exec -w /home/docker s3-antivirus-builder /bin/sh -c "rpm2cpio libtool-lt
 docker exec -w /home/docker s3-antivirus-builder /bin/sh -c "cp -v /lib64/libxml2.so* usr/lib64"
 docker exec -w /home/docker s3-antivirus-builder /bin/sh -c "cp -v /lib64/libbz2.so* usr/lib64"
 docker exec -w /home/docker s3-antivirus-builder /bin/sh -c "cp -v /lib64/liblzma.so* usr/lib64"
+docker exec -w /home/docker s3-antivirus-builder /bin/sh -c "chmod -R a+w ."
 
 echo "-- Copying the executables and required libraries --"
 mkdir ./bin
