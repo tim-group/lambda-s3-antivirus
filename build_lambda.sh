@@ -31,9 +31,9 @@ docker exec -w /home/docker s3-antivirus-builder /bin/sh -c "rpm2cpio clamav-upd
 docker exec -w /home/docker s3-antivirus-builder /bin/sh -c "rpm2cpio json-c*.rpm | cpio -idmv"
 docker exec -w /home/docker s3-antivirus-builder /bin/sh -c "rpm2cpio pcre2*.rpm | cpio -idmv"
 docker exec -w /home/docker s3-antivirus-builder /bin/sh -c "rpm2cpio libtool-ltdl*.rpm | cpio -idmv"
-docker exec -it -w /home/docker s3-antivirus-builder /bin/sh -c "rpm2cpio libprelude*.rpm | cpio -idmv"
-docker exec -it -w /home/docker s3-antivirus-builder /bin/sh -c "rpm2cpio gnutls*.rpm | cpio -idmv"
-docker exec -it -w /home/docker s3-antivirus-builder /bin/sh -c "rpm2cpio nettle*.rpm | cpio -idmv"
+docker exec -w /home/docker s3-antivirus-builder /bin/sh -c "rpm2cpio libprelude*.rpm | cpio -idmv"
+docker exec -w /home/docker s3-antivirus-builder /bin/sh -c "rpm2cpio gnutls*.rpm | cpio -idmv"
+docker exec -w /home/docker s3-antivirus-builder /bin/sh -c "rpm2cpio nettle*.rpm | cpio -idmv"
 
 docker exec -w /home/docker s3-antivirus-builder /bin/sh -c "cp -v /lib64/libxml2.so* usr/lib64"
 docker exec -w /home/docker s3-antivirus-builder /bin/sh -c "cp -v /lib64/libbz2.so* usr/lib64"
