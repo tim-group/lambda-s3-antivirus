@@ -23,7 +23,7 @@ docker start s3-antivirus-builder
 echo "-- Updating, downloading and unpacking clamAV and ClamAV update --"
 docker exec -w /home/docker s3-antivirus-builder yum install -y cpio yum-utils
 docker exec -w /home/docker s3-antivirus-builder amazon-linux-extras install -y epel
-docker exec -w /home/docker s3-antivirus-builder yumdownloader -x \*i686 --archlist=x86_64 clamav clamav-lib clamav-update json-c pcre2 libtool-ltdl
+docker exec -w /home/docker s3-antivirus-builder yumdownloader -x \*i686 --archlist=x86_64 clamav clamav-lib clamav-update json-c pcre2 libtool-ltdl libprelude gnutls nettle
 docker exec -w /home/docker s3-antivirus-builder /bin/sh -c "echo 'folder content' && ls -la"
 docker exec -w /home/docker s3-antivirus-builder /bin/sh -c "rpm2cpio clamav-0*.rpm | cpio -idmv"
 docker exec -w /home/docker s3-antivirus-builder /bin/sh -c "rpm2cpio clamav-lib*.rpm | cpio -idmv"
@@ -31,6 +31,9 @@ docker exec -w /home/docker s3-antivirus-builder /bin/sh -c "rpm2cpio clamav-upd
 docker exec -w /home/docker s3-antivirus-builder /bin/sh -c "rpm2cpio json-c*.rpm | cpio -idmv"
 docker exec -w /home/docker s3-antivirus-builder /bin/sh -c "rpm2cpio pcre2*.rpm | cpio -idmv"
 docker exec -w /home/docker s3-antivirus-builder /bin/sh -c "rpm2cpio libtool-ltdl*.rpm | cpio -idmv"
+docker exec -it -w /home/docker s3-antivirus-builder /bin/sh -c "rpm2cpio libprelude*.rpm | cpio -idmv"
+docker exec -it -w /home/docker s3-antivirus-builder /bin/sh -c "rpm2cpio gnutls*.rpm | cpio -idmv"
+docker exec -it -w /home/docker s3-antivirus-builder /bin/sh -c "rpm2cpio nettle*.rpm | cpio -idmv"
 
 docker exec -w /home/docker s3-antivirus-builder /bin/sh -c "cp -v /lib64/libxml2.so* usr/lib64"
 docker exec -w /home/docker s3-antivirus-builder /bin/sh -c "cp -v /lib64/libbz2.so* usr/lib64"
