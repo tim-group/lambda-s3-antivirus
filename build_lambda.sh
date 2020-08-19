@@ -6,6 +6,7 @@ rm -f ${LAMBDA_FILE}
 
 cleanup() {
     echo "-- Cleaning up --"
+    docker exec -w /home/docker s3-antivirus-builder /bin/sh -c "chmod -R a+w ." || true
     docker stop s3-antivirus-builder || true
     docker rm s3-antivirus-builder || true
     docker stop s3-antivirus-sanitycheck || true
@@ -38,16 +39,13 @@ docker exec -w /home/docker s3-antivirus-builder /bin/sh -c "rpm2cpio nettle*.rp
 docker exec -w /home/docker s3-antivirus-builder /bin/sh -c "cp -v /lib64/libxml2.so* usr/lib64"
 docker exec -w /home/docker s3-antivirus-builder /bin/sh -c "cp -v /lib64/libbz2.so* usr/lib64"
 docker exec -w /home/docker s3-antivirus-builder /bin/sh -c "cp -v /lib64/liblzma.so* usr/lib64"
-docker exec -w /home/docker s3-antivirus-builder /bin/sh -c "chmod -R a+w ."
+
 
 echo "-- Copying the executables and required libraries --"
-mkdir ./bin
+mkdir -p bin
 cp clamav/usr/bin/clamscan clamav/usr/bin/freshclam clamav/usr/lib64/* bin/.
 cp -R ./s3-antivirus/* bin/.
-pushd ./bin
-zip -r9 ${LAMBDA_FILE} *
-popd
-cp bin/${LAMBDA_FILE} .
+zip -rj9 ${LAMBDA_FILE} bin/*
 
 echo "-- Verifying shared libraries --"
 mkdir -p clamav_check
